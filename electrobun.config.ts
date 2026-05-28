@@ -4,7 +4,7 @@ export default {
 	app: {
 		name: "khata-plus",
 		identifier: "khataplus.electrobun.dev",
-		version: "0.0.3",
+		version: "0.0.4",
 	},
 	build: {
 		// Vite builds to dist/, we copy from there
