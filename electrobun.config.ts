@@ -4,7 +4,7 @@ export default {
 	app: {
 		name: "khata-plus",
 		identifier: "khataplus.electrobun.dev",
-		version: "0.0.1",
+		version: "0.0.2",
 	},
 	build: {
 		// Vite builds to dist/, we copy from there
@@ -24,4 +24,7 @@ export default {
 			bundleCEF: true,
 		},
 	},
+	release: {
+		baseUrl: "https://github.com/sumnesha47/khata-plus/releases/latest/download",
+	}
 } satisfies ElectrobunConfig;

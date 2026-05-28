@@ -564,10 +564,45 @@ Bun.serve({
 
 console.log(`API server running at http://localhost:${API_PORT}`);
 
+async function checkForUpdates() {
+	const channel = await Updater.localInfo.channel();
+	if (channel === "dev") return;
+
+	try {
+		const updateInfo = await Updater.checkForUpdate();
+		if (updateInfo.updateReady) {
+			console.log("Staged update found, applying...");
+			await Updater.applyUpdate();
+			return;
+		}
+		if (updateInfo.updateAvailable) {
+			console.log(`Update v${updateInfo.version} available, downloading...`);
+			await Updater.downloadUpdate();
+			console.log("Update ready — will apply on next restart");
+		}
+	} catch (err) {
+		console.log("Update check failed:", err);
+	}
+
+	setInterval(async () => {
+		try {
+			const info = await Updater.checkForUpdate();
+			if (info.updateAvailable) {
+				await Updater.downloadUpdate();
+				console.log("Update ready — will apply on next restart");
+			}
+		} catch {}
+	}, 60 * 60 * 1000);
+}
+
 const url = await getMainViewUrl();
 
+if (Updater.updateInfo()?.updateReady) {
+	await Updater.applyUpdate();
+}
+
 const mainWindow = new BrowserWindow({
-	title: "Khata POS",
+	title: "Khata Plus",
 	url,
 	frame: {
 		width: 1280,
@@ -577,4 +612,6 @@ const mainWindow = new BrowserWindow({
 	},
 });
 
-console.log("Khata POS app started!");
+checkForUpdates();
+
+console.log("Khata Plus app started!");
